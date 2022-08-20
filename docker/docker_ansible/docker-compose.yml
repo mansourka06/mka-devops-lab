@@ -1,0 +1,25 @@
+version: '3'
+services:
+  master:
+    build:
+      context: .
+      dockerfile: ./ansible_master.Dockerfile
+    working_dir: /root/ansible_lab
+    volumes:
+      - /home/mansour/mka_devops_labs/:/root/lab
+      - /home/mansour/mka_devops_labs/Ansible:/etc/ansible
+    command: tail -f /dev/null
+  web:
+    build:
+      context: .
+      dockerfile: ./ansible_client.Dockerfile
+  db:
+    build:
+      context: .
+      dockerfile: ./ansible_client.Dockerfile
+  lb:
+    build:
+      context: .
+      dockerfile: ./ansible_client.Dockerfile
+    ports:
+    - 8082:80
