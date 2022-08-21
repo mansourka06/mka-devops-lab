@@ -1,0 +1,8 @@
+---
+# defaults file for apache
+domain: mansour.ka
+http_port: 80
+host_url: "{{ domain }}.com"
+http_host: "cv_mk"
+apache_user: mansour
+http_conf: my_apache_config.conf

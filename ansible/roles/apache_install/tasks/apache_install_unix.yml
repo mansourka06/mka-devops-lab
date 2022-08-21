@@ -1,0 +1,18 @@
+---
+- name: "APACHE - Début Installation"
+  debug:
+    msg:  "Lancement de l'installation du package apache2"
+  
+- name: "Installation du package apache2 sur {{ ansible_hostname }}"
+  apt:
+    name: apache2
+    update_cache: yes
+  become: True
+  when: ansible_os_family is regex('Debian|Ubuntu')
+
+- name: "Installation du package httpd sur {{ ansible_hostname }}"
+  apt:
+    name: httpd
+    update_cache: yes
+  become: True
+  when: ansible_os_family == "RedHat"

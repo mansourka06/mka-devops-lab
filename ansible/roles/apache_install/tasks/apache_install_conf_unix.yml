@@ -1,0 +1,56 @@
+---
+- name: "UFW firewall allow HTTP on port {{ http_port }}"
+  ufw:
+    rule: allow
+    port: "{{ http_port }}"
+    proto: tcp
+
+- name: "Deploy Apache Configuration for Debian/Ubuntu hosts"
+  block:
+    - name: "Ensure document root directory exists"
+      file:
+        path: "/var/www/{{ http_host }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+    
+    - name: "Copy index template file"
+      template:
+        src: "index.html.j2"
+        dest: "/var/www/{{ http_host }}/index.html"
+
+    - name: "Deploy apache page configration on {{ ansible_hostname }}"
+      template:
+        src: my_apache_config.conf.j2
+        dest: "/etc/apache2/{{ http_conf }}"
+
+    - name: "Create symbolic link configration"
+      file:
+        src: "/etc/apache2/{{ http_conf }}"
+        dest: "/etc/apache2/sites-available/{{ http_conf }}"
+        state: link
+
+    - name: "Enable {{ http_host }} site"
+      command: a2ensite {{ http_conf }}
+
+  become: true
+  notify: 
+    - Restart Apache
+  when: ansible_os_family is regex('Debian|Ubuntu')
+
+- name: "Deploy Apache Configuration for RedHat hosts"
+  block:
+    - name: "Deploy apache page configration on {{ ansible_hostname }}"
+      template:
+        src: my_httpd_config.conf.j2
+        dest: /etc/httpd/conf/my_httpd_config.conf
+
+  become: true
+  notify: 
+    - Restart httpd
+  when: ansible_os_family == "Redhat"
+
+- name: "End Install"
+  bebug:
+    msg: " {{ http_host }} site is sucessfully deployed"

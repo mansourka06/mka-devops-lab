@@ -1,0 +1,12 @@
+---
+#../ansible/roles/apache
+
+- name: "Installation du middleware Apache"
+  import_tasks: apache_install_unix.yml
+  tags:
+    - apache_install_unix
+  
+- name: "Deploy apache config"
+  import_tasks: apache_install_conf_unix.yml
+  tags:
+    - apache_install_unix

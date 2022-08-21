@@ -1,0 +1,25 @@
+<VirtualHost *:"{{ http_port }}">
+    DocumentRoot "{{ host_url }}"
+    ServerName "{{ http_host }}"
+    ServerAlias www."{{ http_host }}"
+    DocumentRoot /var/www/"{{ http_host }}"
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride None
+        Require all denied
+    < /Directory>
+
+    <Directory /usr/share>
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    <Directory /var/www/>
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+</VirtualHost>

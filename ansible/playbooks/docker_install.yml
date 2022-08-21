@@ -1,0 +1,6 @@
+---
+- name: "Deploy docker instance"
+  hosts: "{{ playbook_hostname }}"
+  gather_facts: true
+  roles:
+    - docker_install

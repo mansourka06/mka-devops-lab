@@ -1,0 +1,31 @@
+---
+- name: "Uninstall old docker versions if installed on {{ ansible_hostname }}"
+  apt:
+    name: '{{ docker_old_versions_Debian }}'
+    state: absent
+
+- name: "Install role dependencies"
+  apt:
+    name: "{{ item }}"
+    state: present
+    autoclean: true
+  loop: "{{ docker_dependencies_Debian }}"
+
+- name: "Add Docker apt key"
+  apt_key:
+    url: "{{ apt_key_url }}"
+    id: "{{ apt_key_id }}"
+    state: present
+  register: add_repository_key
+  when:
+    - apt_key_url is defined
+    - apt_key_url != ''
+
+- name: "Add Docker repository"
+  apt_repository:
+    repo: "{{ docker_apt_repository }}"
+    state: present
+    update_cache: true
+  when:
+    - docker_apt_repository is defined
+    - docker_apt_repository != '' 
