@@ -53,4 +53,4 @@
 
 - name: "End Install"
   bebug:
-    msg: " {{ http_host }} site is sucessfully deployed"
+    msg: "{{ http_host }} site is sucessfully deployed"

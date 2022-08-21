@@ -17,9 +17,7 @@
     id: "{{ apt_key_id }}"
     state: present
   register: add_repository_key
-  when:
-    - apt_key_url is defined
-    - apt_key_url != ''
+  when: ((apt_key_url is defined) and (apt_key_url != ''))
 
 - name: "Add Docker repository"
   apt_repository:
