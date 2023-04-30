@@ -1,0 +1,6 @@
+---
+# vars file for debian-server-setup
+
+deb_user: debian
+
+deb_password: "{{ deb_secretsalt }}"
