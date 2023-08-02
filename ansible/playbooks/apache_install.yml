@@ -1,6 +1,0 @@
----
-- name: "Deploy apache instance"
-  hosts: "{{ playbook_hostname }}"
-  gather_facts: true
-  roles:
-    - apache2_install
