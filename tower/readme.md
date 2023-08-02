@@ -7,7 +7,7 @@
 - Tower enhances security and collaboration among teams, enabling seamless automation across the entire organization. It serves as the control center for Ansible automation, simplifying complex tasks and accelerating the delivery of applications and services. Ansible Tower is developed and supported by Red Hat.
 
 
-## Tower Installation Steps
+## Installation Steps
 
 1. **Clone the repository:**
 ```bash
@@ -43,7 +43,7 @@ cd ~/.awx/awxcompose/
 docker-compose up -d
 ```
 
-## Tower Platfotm
+## AWX Interface
 
 1. **Access**: with our ansible lab ip adress from our navigator (example: 192.168.100.10)
 
