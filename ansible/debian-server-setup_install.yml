@@ -1,0 +1,11 @@
+---
+- name: "Configure Debian server"
+  hosts: debian-server
+  become: yes
+  vars_files:
+    - secrets.yml
+
+  roles:
+    - debian-server-setup
+
+...
