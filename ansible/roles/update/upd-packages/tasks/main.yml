@@ -1,0 +1,9 @@
+---
+- name: Update packages
+  hosts: all 
+  tasks:
+    - name: Update list of packages
+      package:
+        name: "{{ list_packages }}"
+        state: latest
+      when: ansible_os_family is regex(Debian|Redhat)

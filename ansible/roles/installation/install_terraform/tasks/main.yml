@@ -1,0 +1,29 @@
+---
+- name: Install Terraform
+  block:
+    - name: Download Terraform binary
+      get_url:
+        url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+        dest: "/tmp/terraform_{{ terraform_version }}.zip"
+      register: download_result
+
+    - name: Unzip Terraform binary
+      unarchive:
+        src: "/tmp/terraform_{{ terraform_version }}.zip"
+        dest: "/tmp"
+        remote_src: yes
+      when: download_result.status == "changed"
+
+    - name: Move Terraform binary to /usr/local/bin/
+      command: mv /tmp/terraform /usr/local/bin/
+      when: download_result.status == "changed"
+
+    - name: Remove downloaded zip file
+      file:
+        path: "/tmp/terraform_{{ terraform_version }}.zip"
+        state: absent
+      when: download_result.status == "changed"
+
+- name: Display installation completed message
+  debug:
+    msg: "Terraform installation completed."

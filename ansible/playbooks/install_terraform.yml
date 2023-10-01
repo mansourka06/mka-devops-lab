@@ -1,0 +1,7 @@
+---
+- name: Install Terraform
+  hosts: localhost 
+  become: yes
+  ansible_become_method: sudo
+  vars:
+    terraform_version: "0.14.7" # Change this to your desired Terraform version

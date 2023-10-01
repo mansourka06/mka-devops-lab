@@ -1,0 +1,10 @@
+---
+
+## docker install vars
+
+docker_dependence_packages:
+  - curl 
+  - epel-release
+  - net-tools 
+
+docker_user: "vagrant"

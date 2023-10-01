@@ -1,0 +1,59 @@
+---
+- name: Check if Docker is installed
+  command: docker --version
+  register: docker_check
+  ignore_errors: true
+
+# Tasks to run when docker is present
+- block:
+    - name: Install docker
+      debug:
+        msg: "Docker is already installed on {{ ansible_hostname }}"
+
+    - name: Ensure docker is running if docker est present
+      become: true
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+  when: docker_check.rc == 0
+
+- name: Install docker packages dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+    autoclean: true
+  loop: "{{ docker_dependence_packages }}"
+
+# Tasks to run when docker is not present
+- name: Install Docker and Docker Compose
+  block:
+    - name: Install Docker
+      shell: |
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sh get-docker.sh
+
+    - name: Add user to Docker group
+      become: true
+      user:
+        name: "{{ docker_user }}"
+        groups: docker
+
+    - name: Enable and start Docker service
+      become: true
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Install Docker-Compose
+      become: true
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: End installation
+      debug:
+        msg: "Docker installation completed."
+  when: docker_check.rc != 0

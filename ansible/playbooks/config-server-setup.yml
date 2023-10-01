@@ -1,0 +1,11 @@
+---
+- name: "Configure server"
+  hosts: all
+  become: yes
+  vars_files:
+    - secrets.yml
+
+  roles:
+    - config-server-setup
+    - ssh
+...

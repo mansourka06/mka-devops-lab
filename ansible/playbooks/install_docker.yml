@@ -1,16 +1,6 @@
 ---
-- hosts: localhost
-  become: true
-  vars:
-    pip_install_packages:
-      - name: docker
-  pre_tasks:
-    - name: Install EPEL repo
-      package: name=epel-release state=present
-      when: ansible_distribution == "CentOS"
-
-    - name: install python-pip
-      package: name=python-pip state=present update_cache=yes
+- name: Install Docker and Docker Compose
+  hosts: "{{ target_host }}"
+  become: yes
   roles:
-    - geerlingguy.pip
-    - geerlingguy.docker
+    - my_docker_role

@@ -1,0 +1,32 @@
+---
+- name: Ensure Apache is installed
+  become: true
+  vars:
+    apache_packages:
+      - httpd # CentOS/RHEL
+      - apache2 # Ubuntu/Debian
+  package:
+    name: "{{ apache_packages }}"
+    state: present
+
+- name: Start and enable Apache service
+  become: true
+  service:
+    name: "{{ 'httpd' if ansible_os_family == 'RedHat' else 'apache2' }}"
+    state: started
+    enabled: yes
+
+- name: Deploy a sample HTML page
+  become: true
+  template:
+    src: index.html.j2
+    dest: "{{ item }}"
+  with_items:
+    - /var/www/html/index.html # CentOS/RHEL
+    - /var/www/html/index.html # Ubuntu/Debian
+
+- name: Reload Apache service
+  become: true
+  service:
+    name: "{{ 'httpd' if ansible_os_family == 'RedHat' else 'apache2' }}"
+    state: reloaded
