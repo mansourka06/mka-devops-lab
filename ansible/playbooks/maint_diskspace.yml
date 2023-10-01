@@ -1,0 +1,5 @@
+---
+- name: check disk space
+  hosts: "{{ target_host }}"
+  roles:
+    - maint-diskspace

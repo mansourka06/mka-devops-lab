@@ -1,0 +1,5 @@
+- name: check if system reboot is required
+  hosts: "{{ target_host }}"
+  become: true
+  roles:
+    - maint-reboot-required

@@ -1,0 +1,8 @@
+---
+- name: Reboot machine
+  hosts: "{{ target_host }}"
+  become: true
+  tasks:
+  - name: reboot machine
+    reboot:
+      reboot_timeout: 3600

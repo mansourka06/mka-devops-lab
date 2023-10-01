@@ -1,0 +1,6 @@
+---
+- name: notify discord
+  hosts: "{{ target_host }}"
+  become: yes
+  roles:
+    - notify_slack
