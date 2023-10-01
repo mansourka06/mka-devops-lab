@@ -1,0 +1,19 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+    config.vm.define "gitlab" do |devops|
+      devops.vm.box = "ubuntu/mantic64"
+      devops.vm.network "private_network", type: "dhcp"
+      devops.vm.hostname = "gitlab"
+      devops.vm.provider "virtualbox" do |v|
+        v.name = "gitlab"
+        v.memory = 1024
+        v.cpus = 2
+      end
+      devops.vm.provision :shell do |shell|
+        shell.path = "install_gitlab.sh"
+        shell.env = { 'ENABLE_ZSH' => ENV['ENABLE_ZSH'] }
+      end
+    end
+  end  
