@@ -43,7 +43,7 @@ your_target_server ansible_ssh_user=your_ssh_user ansible_ssh_host=server_ip_or_
 
 ## Role Variables
 
-- check the role variables in [main.yml](./default/main.yml) file
+- check the role variables in [main.yml](./defaults/main.yml) file
 
 
 ## Author
