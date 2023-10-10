@@ -1,38 +1,50 @@
-Role Name
-=========
+# CONFIG_SERVER_BASE_INSTALL
 
-A brief description of the role goes here.
+## Description: 
 
-Requirements
-------------
+This Ansible role automates the installation and configuration of a Linux server with basic requirements.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
 
-Role Variables
---------------
+## Prerequisites
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- [x] **Ansible Installed:** Ensure that Ansible is installed on your control machine where you'll run the playbook. You can install Ansible following the official [Ansible Installation Guide](https://docs.ansible.com/ansible/latest/installation_guide/index.html).
 
-Dependencies
-------------
+-  [x] **SSH Access:** Make sure you have SSH access to the target server(s) where you want to install and configure the SMTP server.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Os available:
 
-Example Playbook
-----------------
+- [x] Debian
+- [x] RedHat
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## Playbook Usage
 
+1. **Create playbook.yml file and add the role name**:
+  
+   ```bash
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - config_server_base_install
+   ```
 
-License
--------
+2. **Create inventory.ini file**:
 
-BSD
+```bash
+[smtp_servers]
+your_target_server ansible_ssh_user=your_ssh_user ansible_ssh_host=server_ip_or_hostname
+ ```
 
-Author Information
-------------------
+3. **Run the playbook by executing the fallowing command**:
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+ ```bash
+ ansible-playbook -i inventory.ini playbook.yml
+
+ ```
+
+## Role Variables
+
+- check the role variables in [here](./vars)
+
+
+## Author
+
+Mansour KA

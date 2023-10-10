@@ -1,5 +1,7 @@
 ---
 - hosts: localhost
   remote_user: root
+  become: yes
+  
   roles:
-    - debian-server-setup
+    - config_server_base_install

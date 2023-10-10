@@ -1,55 +1,43 @@
 ---
 # tasks file for server-base-config
 
-- name: Base configuration for Debian or Ubuntu hosts
-  block:
-    - name: Configure the timezone
-      timezone:
-        name: "UTC"
+- name: Configure the timezone
+  timezone:
+    name: "UTC"
 
-    - name: Set the hostname
-      hostname:
-        name: "{{ inventory_hostname }}"
+- name: Set the hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
 
-    - name: Update apt cache
-      apt:
-        update_cache: yes
+- name: create user
+  user:
+    name: "{{ deb_user }}"
+    state: present
+    groups: sudo
+    shell: /bin/bash
+    password: "{{ 'deb_password' | password_hash('sha512', 'deb_secretsalt') }}"
 
-    - name: Ensure basic packages are installed
-      apt:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - python3-pip
-        - python3-venv
-        - git
-        - curl
-        - wget
-        - unzip
+#Base configuration for Debian hosts
+- name: Ensure basic packages are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ list_packages }}"
 
-    - name: create user
-      user:
-        name: "{{ deb_user }}"
-        state: present
-        groups: sudo
-        shell: /bin/bash
-        password: "{{ 'deb_password' | password_hash('sha512', 'deb_secretsalt') }}"
+- name: Install and configure NTP
+  package:
+    name: ntp
+    state: present
+  vars:
+    ntpservers:
+      - 0.pool.ntp.org
+      - 1.pool.ntp.org
 
-    - name: Install and configure NTP
-      apt:
-        name: ntp
-        state: present
-      vars:
-        ntpservers:
-          - 0.pool.ntp.org
-          - 1.pool.ntp.org
-
-    - name: Set NTP servers
-      template:
-        src: ntp.conf.j2
-        dest: /etc/ntp.conf
-      notify:
-        - restart ntp
-  when: ansible_os_family is regex(Debian|Ubuntu)
-
+- name: Set NTP servers
+  template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+  notify:
+    - restart ntp
+ 
 ...

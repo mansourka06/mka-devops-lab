@@ -1,6 +1,14 @@
 ---
 # vars file for debian-server-setup
 
-deb_user: debian
+deb_user: ansible
 
 deb_password: "{{ deb_secretsalt }}"
+
+list_packages:
+  - python3-pip
+  - python3-venv
+  - git
+  - curl
+  - wget
+  - unzip
