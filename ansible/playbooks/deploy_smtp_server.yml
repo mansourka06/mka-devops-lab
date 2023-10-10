@@ -1,0 +1,7 @@
+---
+- name: Install and Configure SMTP Server
+  hosts: "{{ target_server }}"
+  become: yes  # Run tasks with root (sudo) privileges
+
+  roles:
+    - deploy_smtp_server

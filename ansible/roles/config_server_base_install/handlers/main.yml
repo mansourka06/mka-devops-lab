@@ -1,0 +1,7 @@
+---
+# handlers file for debian-server-setup
+
+- name: restart ntp
+  service:
+    name: ntp
+    state: restarted

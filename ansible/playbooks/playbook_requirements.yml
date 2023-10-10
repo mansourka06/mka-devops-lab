@@ -1,0 +1,23 @@
+---
+
+- src: <role_git_url>
+  name: <role_name>
+  version: <role_version> #branch or tag
+
+# Install a role for gitlab/gitlab-runner
+- src: https://github.com/HP41/ansible-docker-gitlab.git
+
+# Install a role for pip
+- src: geerlingguy.pip
+
+# Install a role for docker
+- src: geerlingguy.docker
+
+# Install java
+- src: geerlingguy.java
+
+# Install jenkins
+- src: geerlingguy.jenkins
+
+# Install kubenretes
+- src: geerlingguy.kubernetes

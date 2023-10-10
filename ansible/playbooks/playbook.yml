@@ -1,0 +1,10 @@
+---
+- hosts: "{{ target_host }}"
+  become: yes
+  vars:
+    #var1: val1
+    #var2: val2
+
+  roles:
+    - <role_name>
+    - <role_name>
