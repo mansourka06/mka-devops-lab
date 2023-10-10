@@ -1,0 +1,35 @@
+---
+- name: Install and Configure SMTP Server (Debian OS)
+  block:
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+
+    - name: Install Postfix
+      apt:
+        name: postfix
+        state: present
+  become: true
+  when: ansible_os_family == "Debian"  # Only for Debian/Ubuntu-based systems
+
+- name: Install and Configure SMTP Server (RedHat OS)
+  block:
+    - name: Update YUM package cache
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Install Postfix
+      yum:
+        name: postfix
+        state: present
+  become: true
+  when: ansible_os_family == "RedHat"  # Only for Red Hat-based systems
+
+- name: Configure Postfix
+  template:
+    src: smtp.cf.j2  # Create this template (explained below)
+    dest: /etc/postfix/main.cf
+  notify:
+        - restart postfix
+  become: true

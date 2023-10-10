@@ -1,0 +1,7 @@
+---
+# handlers file for debian-server-setup
+
+- name: restart postfix
+  service:
+    name: postfix
+    state: restarted

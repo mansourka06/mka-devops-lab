@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  become: yes
+  remote_user: root
+  roles:
+    - deploy_smtp_server
