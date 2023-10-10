@@ -8,9 +8,9 @@ This Ansible role automates the installation and configuration of an SMTP server
 
 ## Prerequisites
 
-- [x](**Ansible Installed:**) Ensure that Ansible is installed on your control machine where you'll run the playbook. You can install Ansible following the official [Ansible Installation Guide](https://docs.ansible.com/ansible/latest/installation_guide/index.html).
+- [x] **Ansible Installed:** Ensure that Ansible is installed on your control machine where you'll run the playbook. You can install Ansible following the official [Ansible Installation Guide](https://docs.ansible.com/ansible/latest/installation_guide/index.html).
 
--  [x](**SSH Access:**) Make sure you have SSH access to the target server(s) where you want to install and configure the SMTP server.
+-  [x] **SSH Access:** Make sure you have SSH access to the target server(s) where you want to install and configure the SMTP server.
 
 ## Os available:
 
