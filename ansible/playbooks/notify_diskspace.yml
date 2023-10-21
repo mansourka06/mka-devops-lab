@@ -1,0 +1,45 @@
+---
+- name: Send Servers DiskSpace via Email
+  hosts: localhost
+  vars_files: ../group_vars/secret.yml
+  tasks:
+    - name: Gather facts about target servers
+      setup:
+        filter: ansible_nodename
+
+    - name: Create a JSON file with server information
+      copy:
+        content: |
+          {
+            "Servers": [
+              {% for host in ansible_play_hosts %}
+              {
+                "Host": "{{ hostvars[host]['ansible_nodename'] }}",
+                {% if hostvars[host]['ansible_mounts'] is defined %}
+                "DiskSpace": "{{ hostvars[host]['ansible_mounts'][0]['size_available'] }}"
+                {% else %}
+                "DiskSpace": "N/A"
+                {% endif %}
+              }{% if not loop.last %},{% endif %}
+              {% endfor %}
+            ]
+          }
+        dest: /tmp/server_info.json
+
+    - name: Send email with server diskspace information
+      mail:
+        host: smtp.gmail.com  #host: 108.177.15.109
+        port: 587
+        username: "{{ email_user }}"
+        password: "{{ email_pwd }}"
+        from: "{{ email_user }}"
+        to: "{{ email_user }}"
+        subject: Server Information
+        subtype: html
+        body: |
+          Here is the list of up servers and their available disk space:
+
+          {{ lookup('file', '/tmp/server_info.json') | to_json(indent=2) }}
+        charset: us-ascii
+      delegate_to: localhost
+      run_once: yes
