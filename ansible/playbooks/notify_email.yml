@@ -1,0 +1,61 @@
+---
+- name: Collect Server Information and Send Email
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Gather server information
+      ansible.builtin.setup:
+        gather_subset:
+          - all
+      register: server_info
+
+    - name: Get server IP address
+      set_fact:
+        server_ip: "{{ ansible_default_ipv4.address }}"
+
+    - name: Get disk space information
+      ansible.builtin.shell:
+        cmd: "df -h"
+      register: disk_space
+
+    - name: Check if the server is running
+      ansible.builtin.command:
+        cmd: "echo 'Server is running'"
+      ignore_errors: true
+      register: server_running
+
+    - name: Create HTML table with server information
+      set_fact:
+        email_body: |
+          <html>
+          <head></head>
+          <body>
+            <h2>Server Information</h2>
+            <table border="1">
+              <tr>
+                <th>IP Address</th>
+                <th>Disk Space</th>
+                <th>Server Running</th>
+              </tr>
+              <tr>
+                <td>{{ server_ip }}</td>
+                <td>{{ disk_space.stdout }}</td>
+                <td>{% if server_running.rc == 0 %}Yes{% else %}No{% endif %}</td>
+              </tr>
+            </table>
+          </body>
+          </html>
+
+    - name: Send email with server information via ProtonMail
+      mail:
+        host: smtp.gmail.com
+        port: 587
+        username: "{{ email_user }}"
+        password: "{{ email_pwd }}"
+        to: mansourka.devops@protonmail.com
+        subject: "Server Information Report"
+        body: "{{ email_body }}"
+      delegate_to: localhost
+      run_once: yes
+
+# NB: run > ansible-galaxy collection install community.general
