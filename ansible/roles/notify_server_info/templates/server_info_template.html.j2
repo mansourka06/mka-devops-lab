@@ -1,0 +1,48 @@
+<html>
+<head>
+  <style>
+    table {
+      width: 100%;
+      background-color: grey;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      color: white;
+      background-color: blue;
+    }
+  </style>
+</head>
+<body>
+  <h2>Servers Informations :</h2>
+
+  <table border="1" style="width:100%; background-color: jade;">
+    <tr>
+      <th>Server Name</th>
+      <th>IP Address</th>
+      <th>Os Distribution</th>
+      <th>Server CPU</th>
+      <th>Server RAM</th>
+      <th>Total Disk</th>
+      <th>Used Memory</th>
+      <th>Available Memory</th>
+      <th>Server Status</th>
+    </tr>
+    <tr>
+      <td>{{ ansible_hostname }}</td>
+      <td>{{ server_ip }}</td>
+      <td>{{ ansible_os_family }}</td>
+      <td>{{ server_info.ansible_processor_cores | default("N/A") }}</td>
+      <td>{{ server_info.ansible_memtotal_mb | default("N/A") }} MB</td>
+      <td>{{ disk_space.stdout_lines[1].split()[1] | default("N/A") }}</td>
+      <td>{{ disk_space.stdout_lines[2].split()[2] | default("N/A") }}</td>
+      <td>{{ disk_space.stdout_lines[2].split()[3] | default("N/A") }}</td>
+      <td style="color: {% if server_running.rc == 0 %}green{% else %}red{% endif %};">{% if server_running.rc == 0 %}UP{% else %}DOWN{% endif %}</td>
+    </tr>
+  </table>
+</body>
+</html>

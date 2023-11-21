@@ -1,0 +1,38 @@
+---
+- name: Get disk usage
+  command: df -h
+  register: disk_usage
+
+- name: Check disk space available
+  shell: df -h / | awk 'NR==2 {print $5}'
+  register: disk_space
+
+- name: Display disk space
+  debug:
+    msg: "the disk space available on {{ ansible_hostname }} is: {{ disk_space }}"
+
+- name: Monitor Disk Space
+  block:
+    - name: Get Disk Space
+      command: df --output=pcent /
+      register: disk_space_output
+
+    - name: Parse Disk Space Percentage
+      set_fact:
+        disk_space_percentage: "{{ (disk_space_output.stdout_lines | skip 1 | first | regex_replace('%','')) | int }}"
+
+    - name: Check Disk Space
+      fail:
+        msg: "Disk space is over 80% ({{ disk_space_percentage }}%)"
+      when: disk_space_percentage > 80
+
+    - name: Send slack message when disk space is over 80%
+      uri:
+        url: "{{ webhook_url }}"
+        method: POST
+        body_format: json
+        body: '{"content": "Disk space on {{ inventory_hostname }} is above 80%!"}'
+        headers:
+          Content-Type: application/json
+        status_code: 204
+      when: disk_usage.stdout[:-1]|int > 80

@@ -1,0 +1,64 @@
+---
+- name: Collect server information and send them email
+  hosts: localhost
+  vars_files:
+    - group_vars/secret.yml
+  roles:
+    - notify_server_info
+
+    # - name: Gather server information
+    #   ansible.builtin.setup:
+    #     gather_subset:
+    #       - all
+    #   register: server_info
+
+    # - name: Get server IP address
+    #   set_fact:
+    #     server_ip: "{{ ansible_default_ipv4.address }}"
+
+    # - name: Get disk space information
+    #   ansible.builtin.shell:
+    #     cmd: "df -h"
+    #   register: disk_space
+
+    # - name: Check if the server is running
+    #   ansible.builtin.command:
+    #     cmd: "echo 'Server is running'"
+    #   ignore_errors: true
+    #   register: server_running
+
+    # - name: Create HTML table with server information and colors
+    #   set_fact:
+    #     email_body: |
+    #       <html>
+    #       <head></head>
+    #       <body>
+    #         <h2>Server Information</h2>
+    #         <table border="1" style="width:100%; background-color: grey;">
+    #           <tr>
+    #             <th style="color: blue;">IP Address</th>
+    #             <th style="color: black;">Disk Space</th>
+    #             <th style="color: green;">Server Running</th>
+    #           </tr>
+    #           <tr>
+    #             <td style="color: blue;">{{ server_ip }}</td>
+    #             <td style="color: black;">{{ disk_space.stdout }}</td>
+    #             <td style="color: {% if server_running.rc == 0 %}green{% else %}red{% endif %};">{% if server_running.rc == 0 %}Yes{% else %}No{% endif %}</td>
+    #           </tr>
+    #         </table>
+    #       </body>
+    #       </html>
+
+    # - name: Send email with server information via Gmail
+    #   mail:
+    #     host: smtp.gmail.com
+    #     port: 587
+    #     username: your_gmail_address@gmail.com
+    #     password: your_app_password  # Use the App Password generated in your Gmail account
+    #     starttls: yes
+    #     to: your_email_address
+    #     subject: "Server Information Report"
+    #     body: "{{ email_body }}"
+
+
+# NB: run > ansible-galaxy collection install community.general

@@ -1,0 +1,8 @@
+---
+# tasks file for notify_server_info
+
+- name: "Collect Server Informations"
+  import_tasks: "collect_server_info.yml"
+
+- name: "Send Server Informations by email"
+  import_tasks: "valo_email.yml"

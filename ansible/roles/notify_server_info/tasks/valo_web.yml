@@ -1,0 +1,48 @@
+---
+# tasks file for notify_server_info
+
+- name: Install nginx
+  apt: 
+    name: nginx
+    state: present
+  become: true
+
+- name: Start nginx
+  systemd:
+    name: nginx
+    state: started
+    enabled: yes
+  become: true
+
+- name: Clean /var/www/html/ directory
+  shell: rm -r /var/www/html/*
+  become: true
+
+- name: Gather server information
+  ansible.builtin.setup:
+    gather_subset:
+      - all
+  register: server_info
+
+- name: Get server IP address
+  set_fact:
+    server_ip: "{{ ansible_default_ipv4.address }}"
+
+- name: Get disk space information
+  command: "df -h"
+  register: disk_space
+
+- name: Get /opt available disk space information
+  command: "df -h /opt"
+  register: disk_space_avail
+
+- name: Check if the server is running
+  shell: "echo 'Server is running'"
+  ignore_errors: true
+  register: server_running
+
+- name: Create HTML table with server information
+  template:
+    src: email_template.j2
+    dest: "{{ email_template_dest }}"
+  delegate_to: localhost

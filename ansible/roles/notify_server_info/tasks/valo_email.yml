@@ -1,0 +1,25 @@
+---
+
+- name: Create HTML table with server information
+  template:
+    src: server_info_template.html.j2
+    dest: "{{ email_template_dest }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Send email with server information via Gmail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "{{ email_user }}"
+    password: "{{ email_pwd }}"
+    to: 
+      - mansourka.devops@protonmail.com
+      - mansour.ka.devops@gmail.com
+    subject: "Server Information Report"
+    body: "{{ lookup('file', email_template_dest) }}"
+    # attach: ""
+    subtype: html
+    charset: us-ascii
+  delegate_to: localhost
+  run_once: true

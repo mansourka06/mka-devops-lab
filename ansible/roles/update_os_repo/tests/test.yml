@@ -1,0 +1,8 @@
+---
+- name: "Update repository packages"
+  hosts: localhost
+  become: yes
+  remote_user: root
+  
+  roles:
+    - update_os_repo

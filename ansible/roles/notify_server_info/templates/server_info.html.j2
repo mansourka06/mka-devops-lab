@@ -1,0 +1,43 @@
+<html>
+<head></head>
+<body>
+  <h2>Server Information</h2>
+  <table border="1" style="width:100%; background-color: jade;">
+    <tr>
+      <th style="color: jade;">Server Name</th>
+      <th style="color: blue;">IP Address</th>
+      <th style="color: pink;">Disk Space available</th>
+      <th style="color: black;">Server Status</th>
+    </tr>
+    <tr>
+      <td>{{ ansible_hostname }}</td>
+      <td>{{ server_ip }}</td>
+      <td>{{ disk_space_avail.stdout }}</td>
+      <td style="color: {% if server_running.rc == 0 %}green{% else %}red{% endif %};">{% if server_running.rc == 0 %}UP{% else %}DOWN{% endif %}</td>
+    </tr>
+  </table>
+
+  <div class="table">
+    <div class="row header blue">
+      <div class="cell">
+        Disk space available :
+        {% for line in disk_space_avail.stdout_lines %}
+          {{ line }} <br>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  div class="table">
+    <div class="row header green">
+      <div class="cell">
+        OS_Release :
+        {%for line in _os_release.stdout_lines %}
+          {{ line }} <br>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

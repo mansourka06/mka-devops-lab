@@ -1,0 +1,4 @@
+---
+# defaults file for notify_server_info
+
+email_template_dest: /tmp/server_info_template.html

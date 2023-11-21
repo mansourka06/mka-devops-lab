@@ -1,0 +1,34 @@
+---
+- name: Update and upgrade apt packages
+  hosts: localhost
+  become: yes
+  become_user: mansour
+
+  tasks:
+    - name: Update apt packages
+      block:
+        - name: Update all apt packages to their latest version
+          apt:
+            name: "*"
+            state: latest
+            update_cache: yes
+
+        - name: Upgrade the OS (apt-get dist-upgrade)
+          apt:
+            upgrade: dist
+      when: ansible_pkg_mgr == 'apt'
+
+    - name: Update yum packages
+      block:  
+        - name: Update all yum packages to their latest version
+          yum:
+            name: '*'
+            state: latest
+        - name: Upgrade yum packages
+          yum:
+            name: '*'
+            state: latest
+            exclude: kernel*
+      when: ansible_pkg_mgr == 'yum'
+      
+...
