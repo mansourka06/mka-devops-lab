@@ -6,3 +6,8 @@
 
 - name: "Send Server Informations by email"
   import_tasks: "valo_email.yml"
+
+- name: "Send server info by mail"
+  import_tasks: "cleanup_files.yml"
+  tags:
+    - cleanup_files
