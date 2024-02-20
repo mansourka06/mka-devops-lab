@@ -1,0 +1,10 @@
+---
+- name: "COLLECT_SERVER_INFO: Cleanup local files"
+  file:
+    path: "{{ item }}"
+    state: absent
+  delegate_to: localhost
+  loop:
+   - "{{ email_template_dest }}"
+   - /tmp/disk_space_{{ansible_hostname}}.txt
+...
