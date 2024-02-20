@@ -1,39 +1,96 @@
 ---
 # tasks file for notify_server_info
 
-- name: Gather server information
-  ansible.builtin.setup:
+# - name: "Check if the server is running"
+#   shell: "echo 'Server is running'"
+#   ignore_errors: true
+#   register: server_status
+
+- name: "Gather server information"
+  setup:
     gather_subset:
       - all
   register: server_info
 
-- name: Get server IP address
+- name: "Print all available facts"
+  debug:
+    var: server_info
+
+- name: "Get server IP address"
   set_fact:
     server_ip: "{{ ansible_default_ipv4.address }}"
 
-- name: Get disk space information
-  command: "df -h"
-  register: disk_space
+- name: "Get total hard disk space"
+  shell: fdisk -l | head -2 | awk '{print $3}'
+  register: disk_size
+  become: yes
 
-- name: Debug Server Facts
-  ansible.builtin.debug:
-    var: server_info
-
-- name: Get /opt available disk space information
-  command: "df -h /opt"
+- name: "Get /home available disk space"
+  shell: 'df -h /home --output\=avail | tail -1'
   register: disk_space_avail
+  become: yes
 
-- name: Debug Disk Space Facts
-  ansible.builtin.debug:
-    var: disk_space
+- name: "Get /home disk space usage (in pourcentage)"
+  shell: 'df -h /home --output\=pcent | tail -1'
+  register: disk_space_usage
+  become: yes
 
-- name: Check if the server is running
-  shell: "echo 'Server is running'"
-  ignore_errors: true
-  register: server_running
+- name: "Get server CPU(s) number"
+  shell: lscpu | grep '^CPU(s):' | awk '{print $2}'
+  register: server_cpus
 
-- name: Create HTML table with server information
-  template:
-    src: "server_info_template.html.j2"
-    dest: "{{ email_template_dest }}"
+- name: "Get server Total RAM"
+  shell: free -h | awk '/^Mem:/ {print $2}'
+  register: server_mem_total
+
+- name: "Get Server Available RAM"
+  shell: free -h | awk '/^Mem:/ {print $7}'
+  register: server_mem_avail
+
+# - name: "Get Server Used RAM"
+#   shell: free -h | awk '/^Mem:/ {print $3}'
+#   register: server_mem_used
+
+# - name: "Get server Free Memory"
+#   shell: free -h | awk '/^Mem:/ {print $4}'
+#   register: server_mem_free
+
+#####################
+## check disk spaces #
+#####################
+
+- name:  "Show Disk Spaces"
+  debug:
+    msg: "{{ item }}"
+  loop: "{{ list_dir }}"
+
+- set_fact:
+    seuil: 0
+    disk_space_output_file: /tmp/disk_space_{{ansible_hostname}}.txt
+
+- name: "Create the content file"
+  file:
+    path: "{{ disk_space_output_file }}"
+    state: touch
   delegate_to: localhost
+
+- name: "Check Disk Spaces"
+  shell: "df -h {{ item }} | tail -n +2 | awk '{ if (int($5)>={{ seuil }}) { print $6; print $5 } }' | tr '\\n' ' '"
+  args:
+    executable: /bin/bash
+  loop: "{{ list_dir }}"
+  register: result_command
+  become: true
+
+- name: "Export Disk Spaces information in content file "
+  lineinfile:
+    dest: "{{ disk_space_output_file }}"
+    line: "{{ item.stdout }}"
+  loop: "{{ result_command.results }}"
+  delegate_to: localhost
+  when: item.stdout != ""
+
+- name: "Get Disk Spaces information in a variable"
+  set_fact:
+    disk_space_info: "{{ lookup('file', disk_space_output_file) }}"
+...
